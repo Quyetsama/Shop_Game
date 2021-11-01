@@ -24,14 +24,14 @@ class ApiAuthentication extends Controller
         }
         catch(Exception $e){
             if ($e instanceof \Illuminate\Database\QueryException){
-                return response()->json(['message' => 'Username or email already exists', 'status' => 'fail'], 409);
+                return response()->json(['message' => 'Username or email already exists', 'status' => false]);
             }
-            return response()->json(['message' => 'error'], 500);
+            return response()->json(['message' => 'error']);
         }
         
         
         return response()->json([
-            'status'=> 200,
+            'status'=> true,
             'message'=> 'User created successfully',
             'data'=>$user
         ]);
@@ -57,11 +57,11 @@ class ApiAuthentication extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Invalid Email or Password',
-                ], 401);
+                ]);
             }
         }
         catch(Exception $e){
-            return response()->json(['message' => 'error'], 500);
+            return response()->json(['message' => 'error']);
         }
 
         return response()->json([
@@ -92,7 +92,7 @@ class ApiAuthentication extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Sorry, the user cannot be logged out'
-            ], 500);
+            ]);
         }
     }
 }

@@ -26,14 +26,14 @@ class ApiRecharge extends Controller
         }
         catch(Exception $e){
             if ($e instanceof \Illuminate\Database\QueryException){
-                return response()->json(['message' => 'error'], 400);
+                return response()->json(['message' => 'error', 'status' => false]);
             }else{
-                return response()->json(['message' => 'error'], 500);
+                return response()->json(['message' => 'error', 'status' => false]);
             }
         }
         
 
-        return response()->json(['message' => 'success', 'code' => $recharge_code], 201);
+        return response()->json(['message' => 'success', 'code' => $recharge_code, 'status' => true]);
     }
 
     public function confirmRecharge(Request $request){
@@ -56,13 +56,13 @@ class ApiRecharge extends Controller
         }
         catch(Exception $e){
             if ($e instanceof \Illuminate\Database\QueryException){
-                return response()->json(['message' => 'error'], 400);
+                return response()->json(['message' => 'error', 'status' => false]);
             }else{
-                return response()->json(['message' => 'error'], 500);
+                return response()->json(['message' => 'error', 'status' => false]);
             }
         }
         
 
-        return response()->json(['message' => 'success'], 200);
+        return response()->json(['message' => 'success', 'status' => true]);
     }
 }
