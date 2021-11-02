@@ -56,7 +56,7 @@ class ApiAuthentication extends Controller
             if (!$token = JWTAuth::attempt($input)) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Invalid Email or Password',
+                    'message' => 'Invalid Username or Password',
                 ]);
             }
         }
@@ -64,9 +64,14 @@ class ApiAuthentication extends Controller
             return response()->json(['message' => 'error']);
         }
 
+        $user = JWTAuth::user($token);
+        // $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+        // $out->writeln($user);
+
         return response()->json([
             'status' => true,
             'token' => $token,
+            'profile' => $user,
         ]);
     }
 
