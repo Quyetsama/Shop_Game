@@ -65,8 +65,9 @@ class ApiAuthentication extends Controller
         }
 
         $user = JWTAuth::user($token);
+
         // $out = new \Symfony\Component\Console\Output\ConsoleOutput();
-        // $out->writeln($user);
+        // $out->writeln($payload);
 
         return response()->json([
             'status' => true,
@@ -99,5 +100,21 @@ class ApiAuthentication extends Controller
                 'message' => 'Sorry, the user cannot be logged out'
             ]);
         }
+    }
+
+    public function checkToken(Request $request)
+    {
+        try {
+            $user = JWTAuth::parseToken()->authenticate(); 
+        } catch (Exception $e) {
+            if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
+                return response()->json(['status' => false, 'message' => 'Token is Invalid']);
+            }else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException){
+                return response()->json(['status' => false, 'message' => 'Token is Expired']);
+            }else{
+                return response()->json(['status' => false, 'message' => 'Error']);
+            }
+        }
+        return response()->json(['status' => true, 'profile' => $user]);
     }
 }

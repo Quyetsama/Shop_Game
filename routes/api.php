@@ -23,6 +23,7 @@ Route::post('register', 'Api\ApiAuthentication@register');  // name, email, user
 Route::post('login', 'Api\ApiAuthentication@login');    // username, password
 Route::post('recharge', 'Api\ApiRecharge@Recharge')->middleware('validtoken:user, recharge');   // token(user), coin
 Route::post('confirmrecharge', 'Api\ApiRecharge@confirmRecharge')->middleware('validtoken:admin, confirm_recharge');    // token(admin), code
+Route::post('checktoken', 'Api\ApiAuthentication@checkToken');
 
 
 Route::group(['middleware' => 'auth.jwt'], function () {
