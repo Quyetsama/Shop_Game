@@ -65,4 +65,19 @@ class ApiRecharge extends Controller
 
         return response()->json(['message' => 'success', 'status' => true]);
     }
+
+    public function getRecharge(Request $request){
+        try{  
+            $recharge = Recharge::where('status', false)->paginate(2);  
+        }
+        catch(Exception $e){
+            if ($e instanceof \Illuminate\Database\QueryException){
+                return response()->json(['message' => 'error', 'status' => false]);
+            }else{
+                return response()->json(['message' => 'error', 'status' => false]);
+            }
+        }  
+
+        return response()->json(['message' => 'success', 'status' => true, 'data' => $recharge]);
+    }
 }

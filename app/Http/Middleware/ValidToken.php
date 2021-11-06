@@ -24,7 +24,7 @@ class ValidToken extends BaseMiddleware
             $user = JWTAuth::parseToken()->authenticate();
 
             if($user->role->name !== $role){
-                return response()->json(['status' => 'Not permisstion']);
+                return response()->json(['message' => 'Not permisstion', 'status' => false]);
             }
 
             $request->attributes->add(['user_id' => $user->id]);
@@ -37,11 +37,11 @@ class ValidToken extends BaseMiddleware
             }
         } catch (Exception $e) {
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
-                return response()->json(['status' => 'Token is Invalid']);
+                return response()->json(['message' => 'Token is Invalid', 'status' => false]);
             }else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException){
-                return response()->json(['status' => 'Token is Expired']);
+                return response()->json(['message' => 'Token is Expired', 'status' => false]);
             }else{
-                return response()->json(['status' => 'Error']);
+                return response()->json(['message' => 'Error', 'status' => false]);
             }
         }
         return $next($request);

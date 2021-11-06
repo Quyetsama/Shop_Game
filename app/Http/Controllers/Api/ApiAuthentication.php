@@ -67,7 +67,40 @@ class ApiAuthentication extends Controller
         $user = JWTAuth::user($token);
 
         // $out = new \Symfony\Component\Console\Output\ConsoleOutput();
-        // $out->writeln($payload);
+        // $out->writeln($user->role->name);
+
+        return response()->json([
+            'status' => true,
+            'token' => $token,
+            'profile' => $user,
+        ]);
+    }
+
+    public function loginAdmin(Request $request)
+    {
+        try{
+            $input = $request->only('username', 'password');
+            $token = null;
+    
+            if (!$token = JWTAuth::attempt($input)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid Username or Password',
+                ]);
+            }
+        }
+        catch(Exception $e){
+            return response()->json(['message' => 'error']);
+        }
+
+        $user = JWTAuth::user($token);
+
+        if($user->role->name != 'admin'){
+            return response()->json([
+                'status' => false,
+                'message' => 'Not Permission',
+            ]);
+        }
 
         return response()->json([
             'status' => true,
@@ -115,6 +148,30 @@ class ApiAuthentication extends Controller
                 return response()->json(['status' => false, 'message' => 'Error']);
             }
         }
+        return response()->json(['status' => true, 'profile' => $user]);
+    }
+
+    public function checkTokenAdmin(Request $request)
+    {
+        try {
+            $user = JWTAuth::parseToken()->authenticate(); 
+        } catch (Exception $e) {
+            if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
+                return response()->json(['status' => false, 'message' => 'Token is Invalid']);
+            }else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException){
+                return response()->json(['status' => false, 'message' => 'Token is Expired']);
+            }else{
+                return response()->json(['status' => false, 'message' => 'Error']);
+            }
+        }
+
+        if($user->role->name != 'admin'){
+            return response()->json([
+                'status' => false,
+                'message' => 'Not Permission',
+            ]);
+        }
+
         return response()->json(['status' => true, 'profile' => $user]);
     }
 }
