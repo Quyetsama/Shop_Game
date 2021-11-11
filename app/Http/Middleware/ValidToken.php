@@ -29,12 +29,12 @@ class ValidToken extends BaseMiddleware
 
             $request->attributes->add(['user_id' => $user->id]);
 
-            if($controller == 'recharge'){
-                $request->attributes->add(['coin' => $request->coin]);
-            }
-            else if($controller == 'confirm_recharge'){
-                $request->attributes->add(['code' => $request->code]);
-            }
+            // if($controller == 'recharge'){
+            //     $request->attributes->add(['coin' => $request->coin]);
+            // }
+            // else if($controller == 'confirm_recharge'){
+            //     $request->attributes->add(['code' => $request->code]);
+            // }
         } catch (Exception $e) {
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
                 return response()->json(['message' => 'Token is Invalid', 'status' => false]);

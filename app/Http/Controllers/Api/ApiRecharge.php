@@ -8,6 +8,7 @@ use App\Models\Recharge;
 use App\User;
 use Carbon\Carbon;
 use Exception;
+use JWTAuth;
 
 class ApiRecharge extends Controller
 {
@@ -15,8 +16,8 @@ class ApiRecharge extends Controller
         try{
             $recharge_code = Carbon::now()->timestamp . $request->get('user_id');
 
-            // $out = new \Symfony\Component\Console\Output\ConsoleOutput();
-            // $out->writeln($recharge_code . ' _ ' . $request->get('user_id'));
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $out->writeln($request->get('coin'));
     
             $recharge = Recharge::create([
                 'user_id' => $request->get('user_id'),
@@ -79,5 +80,23 @@ class ApiRecharge extends Controller
         }  
 
         return response()->json(['message' => 'success', 'status' => true, 'data' => $recharge]);
+    }
+
+    public function getRechargeByID(Request $request){
+        try{  
+            $user = JWTAuth::parseToken()->authenticate(); 
+            $recharge = Recharge::where('user_id', $request->get('user_id'))->get();
+            
+            // $recharge[7]->created_at = $recharge[7]->created_at->format('H:i:s');
+        }
+        catch(Exception $e){
+            if ($e instanceof \Illuminate\Database\QueryException){
+                return response()->json(['message' => 'error', 'status' => false]);
+            }else{
+                return response()->json(['message' => 'error', 'status' => false]);
+            }
+        }  
+
+        return response()->json(['message' => 'success', 'status' => true, 'profile' => $user, 'data' => $recharge]);
     }
 }

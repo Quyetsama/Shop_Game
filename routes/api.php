@@ -27,7 +27,7 @@ Route::post('confirmrecharge', 'Api\ApiRecharge@confirmRecharge')->middleware('v
 Route::post('checktoken', 'Api\ApiAuthentication@checkToken');
 Route::post('checktokenadmin', 'Api\ApiAuthentication@checkTokenAdmin');
 Route::get('getrecharge', 'Api\ApiRecharge@getRecharge')->middleware('validtoken:admin, ""');
-
+Route::get('getrechargebyid', 'Api\ApiRecharge@getRechargeByID')->middleware('validtoken:user, ""');
 
 Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('logout', 'Api\ApiAuthentication@logout');
