@@ -18,7 +18,7 @@ class ValidToken extends BaseMiddleware
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $role, $controller)
+    public function handle($request, Closure $next, $role)
     {
         try {
             $user = JWTAuth::parseToken()->authenticate();
@@ -28,7 +28,7 @@ class ValidToken extends BaseMiddleware
             }
 
             $request->attributes->add(['user_id' => $user->id]);
-
+            
             // if($controller == 'recharge'){
             //     $request->attributes->add(['coin' => $request->coin]);
             // }
