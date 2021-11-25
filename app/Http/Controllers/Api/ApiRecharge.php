@@ -85,7 +85,7 @@ class ApiRecharge extends Controller
     public function getRechargeByID(Request $request){
         try{  
             $user = JWTAuth::parseToken()->authenticate(); 
-            $recharge = Recharge::where('user_id', $request->get('user_id'))->get();
+            $recharge = Recharge::where('user_id', $request->get('user_id'))->orderBy('id', 'DESC')->get();
             
             // $recharge[7]->created_at = $recharge[7]->created_at->format('H:i:s');
         }

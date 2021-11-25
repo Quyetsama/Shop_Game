@@ -17,7 +17,7 @@ class ApiHistory extends Controller
                         ->join('detail_bills', 'detail_bills.bill_id', '=', 'bills.id')
                         ->join('detail_products', 'detail_products.id', '=', 'detail_bills.product_id')
                         ->join('products', 'products.id', '=', 'detail_products.product_id')
-                        ->where('user_id', '=', $user->id)->get();
+                        ->where('user_id', '=', $user->id)->orderBy('bills.id', 'DESC')->get();
         }
         catch(Exception $e){
             if ($e instanceof \Illuminate\Database\QueryException){
@@ -27,6 +27,6 @@ class ApiHistory extends Controller
             }
         }  
 
-        return response()->json(['message' => 'success', 'status' => true, 'data' => $bill]);
+        return response()->json(['message' => 'success', 'status' => true, 'profile' => $user, 'data' => $bill]);
     }
 }
