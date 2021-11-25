@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetailProduct extends Model
 {
+    protected $table = 'detail_products';
+
     protected $hidden = [
-        'created_at', 'updated_at',
+        'sold', 'created_at', 'updated_at',
     ];
 
     public function product(){

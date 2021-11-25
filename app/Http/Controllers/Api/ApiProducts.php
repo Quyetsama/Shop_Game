@@ -11,6 +11,8 @@ use App\Models\DetailProduct;
 use App\Models\Bill;
 use App\Models\DetailBill;
 use App\User;
+use App\Models\Test;
+
 
 class ApiProducts extends Controller
 {
@@ -76,9 +78,9 @@ class ApiProducts extends Controller
             if($product->count < 1){
                 return response()->json(['message' => 'Sản phẩm ' . $product->name . ' đã bán hết!', 'status' => false]);
             }
-            else if($user->coin >= ($product->price - $product->discount)){
+            else if($user->coin >= ($product->price * (100 - $product->discount)) / 100){
                 // Trừ tiền user
-                $user->coin -= ($product->price - $product->discount);
+                $user->coin -= ($product->price * (100 - $product->discount)) / 100;
 
                 // Tìm thông tin chi tiết sản phẩm
                 $detailproduct = DetailProduct::where('product_id', '=', $request->get('product_id'))
@@ -92,7 +94,8 @@ class ApiProducts extends Controller
 
                 // Tạo hóa đơn
                 $bill = Bill::create([
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
+                    'total_coin' => ($product->price * (100 - $product->discount)) / 100
                 ]);
 
                 // Thêm thông tin vào hóa đơn
@@ -105,7 +108,7 @@ class ApiProducts extends Controller
                 $product->save();
                 $detailproduct->save();
 
-                return response()->json(['message' => 'success', 'status' => true, 'coin' => ($product->price - $product->discount), 'data' => $detailproduct]);
+                return response()->json(['message' => 'success', 'status' => true, 'coin' => ($product->price * (100 - $product->discount)) / 100, 'data' => $detailproduct]);
             }
             else{
                 return response()->json(['message' => 'Số dư không đủ vui lòng nạp thêm!', 'status' => false]);
@@ -228,7 +231,7 @@ class ApiProducts extends Controller
 
     public function test(Request $request){
         try{  
-            $products = DetailProduct::select('*')->take(3)->where('product_id', '=', 1)->where('sold', '=', false)->update(['sold' => true]);
+            $products = Test::all();
         }
         catch(Exception $e){
             if ($e instanceof \Illuminate\Database\QueryException){

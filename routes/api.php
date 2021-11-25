@@ -35,6 +35,8 @@ Route::get('productbycategory', 'Api\ApiProducts@getProductByCategory');
 Route::get('search', 'Api\ApiProducts@searchProduct');
 Route::post('payment', 'Api\ApiProducts@payment')->middleware('validtoken:user');
 
+Route::get('bill', 'Api\ApiHistory@purchaseHistory')->middleware('validtoken:user');
+
 Route::get('test', 'Api\ApiProducts@test');
 
 Route::group(['middleware' => 'auth.jwt'], function () {

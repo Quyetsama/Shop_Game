@@ -4,11 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Test extends Model
 {
     protected $table = 'categories';
-
-    protected $hidden = [
-        'created_at', 'updated_at',
-    ];
 }
