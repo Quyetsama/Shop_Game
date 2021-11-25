@@ -9,4 +9,8 @@ class Bill extends Model
     protected $fillable = [
         'user_id',
     ];
+
+    public function detailbill(){
+        return $this->hasMany('App\Models\DetailBill');
+    }
 }

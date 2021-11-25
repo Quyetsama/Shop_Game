@@ -61,6 +61,82 @@ class ApiProducts extends Controller
     }
 
     public function payment(Request $request){
+        
+        // {
+        //     'token': '123',
+        //     'product_id': 1
+        // }
+
+        try{  
+            $user = auth()->user();
+            // $user->coin += 1;
+            // $user->save();
+            // Tìm số lượng sản phẩm
+            $product = Product::where('id', '=', $request->get('product_id'))->first();
+            if($product->count < 1){
+                return response()->json(['message' => 'Sản phẩm ' . $product->name . ' đã bán hết!', 'status' => false]);
+            }
+            else if($user->coin >= ($product->price - $product->discount)){
+                // Trừ tiền user
+                $user->coin -= ($product->price - $product->discount);
+
+                // Tìm thông tin chi tiết sản phẩm
+                $detailproduct = DetailProduct::where('product_id', '=', $request->get('product_id'))
+                                ->where('sold', '=', false)->first();
+                
+                // Sửa thành đã bán
+                $detailproduct->sold = true;
+
+                // Giảm số lượng trong bảng sản phẩm
+                $product->count -= 1;
+
+                // Tạo hóa đơn
+                $bill = Bill::create([
+                    'user_id' => $user->id
+                ]);
+
+                // Thêm thông tin vào hóa đơn
+                $detailBill = DetailBill::create([
+                    'bill_id' => $bill->id,
+                    'product_id' => $detailproduct->id
+                ]);
+
+                $user->save();
+                $product->save();
+                $detailproduct->save();
+
+                return response()->json(['message' => 'success', 'status' => true, 'coin' => ($product->price - $product->discount), 'data' => $detailproduct]);
+            }
+            else{
+                return response()->json(['message' => 'Số dư không đủ vui lòng nạp thêm!', 'status' => false]);
+            }
+
+        }
+        catch(Exception $e){
+            if ($e instanceof \Illuminate\Database\QueryException){
+                return response()->json(['message' => $e, 'status' => false]);
+            }else{
+                return response()->json(['message' => $e, 'status' => false]);
+            }
+        }  
+    }
+
+    public function searchProduct(Request $request){
+        try{  
+            $products = Product::where('name', 'like', '%' . $request->get('product') . '%')->get();
+        }
+        catch(Exception $e){
+            if ($e instanceof \Illuminate\Database\QueryException){
+                return response()->json(['message' => 'error', 'status' => false]);
+            }else{
+                return response()->json(['message' => 'error', 'status' => false]);
+            }
+        }  
+
+        return response()->json(['message' => 'success', 'status' => true, 'data' => $products]);
+    }
+
+    public function paymentCart(Request $request){
         // {
         //     'token': 'asdagdsfsd',
         //     'listproduct': [
@@ -104,13 +180,15 @@ class ApiProducts extends Controller
                     // array_push($detailProduct, $detailproduct);
                     for($j = 0; $j < count($detailproduct); $j++){
                         array_push($arrID, $detailproduct[$j]['id']);
+                        // $detailproduct[$i]->product->count -= 1;
+                        // $detailproduct[$i]->product->save();
                     }
                     
                     $result = Product::where('id', '=', $listproduct[$i]['product_id'])->first();
                     $result->count -= $listproduct[$i]['quantity'];
                     $result->save();
-                    $out = new \Symfony\Component\Console\Output\ConsoleOutput();
-                    $out->writeln($result);
+                    // $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+                    // $out->writeln($result);
                 }
                 // create bill
                 $bill = Bill::create([
