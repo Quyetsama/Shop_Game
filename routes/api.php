@@ -20,7 +20,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('register', 'Api\ApiAuthentication@register');  // name, email, username, password
-Route::post('login', 'Api\ApiAuthentication@login');    // username, password
+Route::post('login', 'Api\ApiAuthentication@login');  
+Route::post('changepassword', 'Api\ApiAuthentication@changePassword')->middleware('validtoken:user');  
+// username, password
 Route::post('loginadmin', 'Api\ApiAuthentication@loginAdmin');    // username, password
 Route::post('recharge', 'Api\ApiRecharge@Recharge')->middleware('validtoken:user');   // token(user), coin
 Route::post('confirmrecharge', 'Api\ApiRecharge@confirmRecharge')->middleware('validtoken:admin');    // token(admin), code

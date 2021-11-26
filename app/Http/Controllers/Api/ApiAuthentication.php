@@ -135,6 +135,27 @@ class ApiAuthentication extends Controller
         }
     }
 
+    public function changePassword(Request $request){
+        try{  
+            $user = auth()->user();
+            if(Hash::check($request->get('current_password'), $user->password)){
+                $user->password = Hash::make($request->get('new_password'));
+                $user->save();
+                return response()->json(['message' => 'Đổi mật khẩu thành công', 'status' => true]);
+            }
+            else{
+                return response()->json(['message' => 'Mật khẩu hiện tại không chính xác', 'status' => false]);
+            }
+        }
+        catch(Exception $e){
+            if ($e instanceof \Illuminate\Database\QueryException){
+                return response()->json(['message' => $e, 'status' => false]);
+            }else{
+                return response()->json(['message' => $e, 'status' => false]);
+            }
+        }  
+    }
+
     public function checkToken(Request $request)
     {
         try {
