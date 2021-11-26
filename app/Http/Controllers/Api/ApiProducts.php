@@ -62,6 +62,27 @@ class ApiProducts extends Controller
         return response()->json(['message' => 'success', 'status' => true, 'data' => $products]);
     }
 
+    public function trendingProducts(Request $request){
+        try{  
+            $products = DetailProduct::join('products', 'products.id', '=', 'detail_products.product_id')
+                                    ->selectRaw('product_id, name, image, price, discount, count(sold) as total')
+                                    ->take(6)
+                                    ->where('sold', '=', true)
+                                    ->groupBy('product_id', 'name', 'image', 'price', 'discount')
+                                    ->orderBy('total', 'DESC')
+                                    ->get();
+        }
+        catch(Exception $e){
+            if ($e instanceof \Illuminate\Database\QueryException){
+                return response()->json(['message' => $e, 'status' => false]);
+            }else{
+                return response()->json(['message' => $e, 'status' => false]);
+            }
+        }  
+
+        return response()->json(['message' => 'success', 'status' => true, 'data' => $products]);
+    }
+
     public function payment(Request $request){
         
         // {

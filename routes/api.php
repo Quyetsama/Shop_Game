@@ -32,6 +32,7 @@ Route::get('getrechargebyid', 'Api\ApiRecharge@getRechargeByID')->middleware('va
 Route::get('categories', 'Api\ApiProducts@getCategory');
 Route::get('products', 'Api\ApiProducts@getProduct');
 Route::get('productbycategory', 'Api\ApiProducts@getProductByCategory');
+Route::get('trending', 'Api\ApiProducts@trendingProducts');
 Route::get('search', 'Api\ApiProducts@searchProduct');
 Route::post('payment', 'Api\ApiProducts@payment')->middleware('validtoken:user');
 
